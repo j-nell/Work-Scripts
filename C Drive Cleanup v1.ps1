@@ -1,4 +1,3 @@
-﻿Function Cleanup { 
 Function Cleanup { 
 <# 
 .Edited By:
@@ -106,22 +105,24 @@ Remove-Item -Force -Recurse -ErrorAction SilentlyContinue
 ## The Recycling Bin is now being emptied! 
 $objFolder.items() | ForEach-Object { Remove-Item $_.path -ErrorAction Ignore -Force -Recurse } 
 ## The Recycling Bin has been emptied! 
- 
+
 ## Starts the Windows Update Service 
 Get-Service -Name wuauserv | Start-Service -Verbose 
- 
+
 $After =  Get-WmiObject Win32_LogicalDisk | Where-Object { $_.DriveType -eq "3" } | Select-Object SystemName, 
 @{ Name = "Drive" ; Expression = { ( $_.DeviceID ) } }, 
 @{ Name = "Size (GB)" ; Expression = {"{0:N1}" -f( $_.Size / 1gb)}}, 
 @{ Name = "FreeSpace (GB)" ; Expression = {"{0:N1}" -f( $_.Freespace / 1gb ) } }, 
 @{ Name = "PercentFree" ; Expression = {"{0:P1}" -f( $_.FreeSpace / $_.Size ) } } | 
 Format-Table -AutoSize | Out-String 
- 
+
 ## Sends some before and after info for ticketing purposes 
- 
+
 Hostname ; Get-Date | Select-Object DateTime 
-Write-Verbose "Before: $Before" 
-Write-Verbose "After: $After" 
+Write-Verbose "Before:" $Before 
+Write-Verbose "After:" $After 
 Write-Verbose $size 
 ## Completed Successfully! 
-Stop-Transcript } Cleanup
+#Stop-Transcript 
+} 
+Cleanup 
